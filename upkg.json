@@ -1,0 +1,25 @@
+{
+  "commands": {
+    "decode-aws-msg": "decode-aws-msg.sh",
+    "download-git-path": "download-git-path.sh",
+    "epoch": "epoch.sh",
+    "highlight": "highlight.sh",
+    "inotify-consumers": "inotify-consumers.sh",
+    "kubectl-decode": "kubectl-decode.sh",
+    "kubectl-pod_by_ip": "kubectl-pod_by_ip.sh",
+    "kubectl-pods_by_node": "kubectl-pods_by_node.sh",
+    "kubectl-pods_on_node": "kubectl-pods_on_node.sh",
+    "listener-pid": "listener-pid.sh",
+    "ls-deleted": "ls-deleted.sh",
+    "randpass": "randpass.sh",
+    "rmi-docker-glob": "rmi-docker-glob.sh",
+    "show-keypress": "show-keypress.sh",
+    "suscp": "suscp.sh",
+    "suspend-virtualboxes": "suspend-virtualboxes.sh",
+    "target-watch": "target-watch.sh"
+  },
+  "dependencies": {
+    "orbit-online/records.sh": "v0.9.3",
+    "andsens/docopt.sh": "v1.0.0-upkg"
+  }
+}

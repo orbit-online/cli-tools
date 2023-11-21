@@ -1,8 +1,7 @@
 #!/bin/bash
 
 epoch() {
-  local pkgroot
-  pkgroot=$(upkg root "${BASH_SOURCE[0]}")
+  local pkgroot; pkgroot=$(upkg root "${BASH_SOURCE[0]}")
 
   DOC="Convert/display unix epoch timestamp
 Usage:

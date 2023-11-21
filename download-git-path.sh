@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 download-git-path() {
-  local pkgroot
-  pkgroot=$(upkg root "${BASH_SOURCE[0]}")
+  local pkgroot; pkgroot=$(upkg root "${BASH_SOURCE[0]}")
 
   DOC="Download a subdirectory of a git repository
 Usage:

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 suspend-virtualboxes() {
-  local pkgroot
-  pkgroot=$(upkg root "${BASH_SOURCE[0]}")
+  local pkgroot; pkgroot=$(upkg root "${BASH_SOURCE[0]}")
 
   DOC="Suspend all running VirtualBox VMs
 Usage:

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 main() {
-  local pkgroot
-  pkgroot=$(upkg root "${BASH_SOURCE[0]}")
+  local pkgroot; pkgroot=$(upkg root "${BASH_SOURCE[0]}")
 
   DOC="Watch dependencies of a systemd target and optionally issue a command
 Usage:

@@ -1,8 +1,7 @@
 #!/bin/bash
 
 ls-deleted() {
-  local pkgroot
-  pkgroot=$(upkg root "${BASH_SOURCE[0]}")
+  local pkgroot; pkgroot=$(upkg root "${BASH_SOURCE[0]}")
 
   DOC="Show deleted files that are still on disk because of open file handles
 Usage:

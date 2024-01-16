@@ -3,6 +3,7 @@
     "decode-aws-msg": "decode-aws-msg.sh",
     "download-git-path": "download-git-path.sh",
     "epoch": "epoch.sh",
+    "gha-status": "gha-status.sh",
     "highlight": "highlight.sh",
     "inotify-consumers": "inotify-consumers.sh",
     "kubectl-decode": "kubectl-decode.sh",

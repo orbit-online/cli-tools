@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 main() {
-  local pkgroot; pkgroot=$(upkg root "${BASH_SOURCE[0]}")
+  set -eo pipefail; shopt -s inherit_errexit
+  local pkgroot; pkgroot=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 
   DOC="Watch dependencies of a systemd target and optionally issue a command
 Usage:

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 show-keypress() {
-  local pkgroot; pkgroot=$(upkg root "${BASH_SOURCE[0]}")
+  local pkgroot; pkgroot=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 
   DOC="Show the actual escape sequence a terminal sends to the tty
 Usage:

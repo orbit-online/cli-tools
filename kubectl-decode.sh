@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 kubectl-decode() {
-  local pkgroot; pkgroot=$(upkg root "${BASH_SOURCE[0]}")
+  local pkgroot; pkgroot=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 
   if [[ $1 != 'decode' ]]; then
     set -- "decode" "$@"

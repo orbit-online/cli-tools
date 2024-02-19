@@ -95,9 +95,10 @@ for ((;docopt_i>0;docopt_i--)); do declare -p "${prefix}__no_watch" \
     if $__no_watch || $all_completed; then
       break
     fi
-    sleep 1
     in_progress_iteration=$((++in_progress_iteration % 4))
-    printf $'\e[%dA\r' "$((lines_printed - 1))"
+    printf $'\r'
+    ((lines_printed <= 1)) || printf $'\e[%dA' "$((lines_printed - 1))"
+    sleep 1
   done
   printf "\n"
 }

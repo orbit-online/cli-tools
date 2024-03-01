@@ -67,13 +67,16 @@ for ((;docopt_i>0;docopt_i--)); do declare -p "${prefix}__no_watch" \
 
   local in_progress_icon=(◜ ◝ ◞ ◟) in_progress_iteration=0 lines_printed
   local suite_id job_name status conclusion all_completed
-
+  # Hide the cursor while running
+  printf $'\e[?25l'; trap "printf $'\e[?25h'" ERR EXIT
   while true; do
     all_completed=true
     lines_printed=0
     while IFS=' ' read -r -d$'\n' suite_id job_name; do
       [[ $lines_printed = 0 ]] || printf "\n"
       IFS=' ' read -r -d$'\n' status conclusion < <(get_run_status "$org" "$repo" "$suite_id") || true
+      # Clear the entire line
+      printf $'\e[2K'
       [[ $status = "completed" ]] || all_completed=false
       if [[ $status = 'queued' ]]; then
         printf $'\e[;34m⏸ '

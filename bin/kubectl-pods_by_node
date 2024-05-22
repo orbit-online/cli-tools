@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+pods_by_node() {
+  kubectl get --all-namespaces pod -o json | \
+	  jq -r --arg name "$1" '.items[] | select(.metadata.name | match($name)) | (.status.hostIP + ":" + .metadata.namespace + "." + .metadata.name)'
+}
+
+pods_by_node "$@"

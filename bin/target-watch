@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# shellcheck source-path=..
+
+main() {
+  set -eo pipefail; shopt -s inherit_errexit
+  local pkgroot; pkgroot=$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/..")
+
+  DOC="Watch dependencies of a systemd target and optionally issue a command
+Usage:
+  target-watch TARGET
+  target-watch COMMAND TARGET"
+# docopt parser below, refresh this parser with `docopt.sh target-watch`
+# shellcheck disable=2016,2086,2317,1090,1091,2034
+docopt() { source "$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh" '2.0.0' || {
+ret=$?;printf -- "exit %d\n" "$ret";exit "$ret";};set -e
+trimmed_doc=${DOC:0:128};usage=${DOC:70:58};digest=9decb;options=();node_0(){
+value TARGET a;};node_1(){ value COMMAND a;};node_2(){ sequence 1 0;};node_3(){
+choice 0 2;};cat <<<' docopt_exit() { [[ -n $1 ]] && printf "%s\n" "$1" >&2
+printf "%s\n" "${DOC:70:58}" >&2;exit 1;}';local varnames=(TARGET COMMAND) \
+varname;for varname in "${varnames[@]}"; do unset "var_$varname";done;parse 3 \
+"$@";local p=${DOCOPT_PREFIX:-''};for varname in "${varnames[@]}"; do unset \
+"$p$varname";done;eval $p'TARGET=${var_TARGET:-};'$p'COMMAND=${var_COMMAND:-};'
+local docopt_i=1;[[ $BASH_VERSION =~ ^4.3 ]] && docopt_i=2;for \
+((;docopt_i>0;docopt_i--)); do for varname in "${varnames[@]}"; do declare -p \
+"$p$varname";done;done;}
+# docopt parser above, complete command for generating this parser is `docopt.sh --library='"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh"' target-watch`
+  eval "$(docopt "$@")"
+  TARGET=${TARGET%'.target'}
+  TARGET=${TARGET}.target
+
+  if [[ -n $COMMAND ]] && ! sudo -n true 2>/dev/null; then
+    sudo true
+  fi
+
+  local watch_pid
+  watch -n.5 -c \
+    SYSTEMD_COLORS=1 systemctl status "$TARGET" \| head -n1 \; \
+    SYSTEMD_COLORS=1 systemctl list-dependencies "$TARGET" \| tail -n+2 \| uniq &
+  watch_pid=$!
+  # shellcheck disable=2064
+  trap "kill $watch_pid >/dev/null 2>&1 || true" EXIT
+  if [[ -n $COMMAND ]]; then
+    sudo systemctl "$COMMAND" "$TARGET"
+  fi
+  wait $watch_pid
+}
+
+main "$@"

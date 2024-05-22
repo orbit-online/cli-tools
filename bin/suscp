@@ -1,5 +1,4 @@
-#!/bin/bash
-# Orbit-host-task: true
+#!/usr/bin/env bash
 
 suscp() {
   set -o pipefail

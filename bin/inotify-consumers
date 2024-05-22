@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Get the procs sorted by the number of inotify watches
 # @author Carl-Erik Kopseng
@@ -13,6 +13,7 @@
 
 main(){
     # get terminal width
+    # shellcheck disable=SC2155
     declare -i COLS=$(tput cols 2>/dev/null || echo 80)
     declare -i WLEN=10
 
@@ -47,18 +48,18 @@ sudo sysctl -p # re-read config
 EOF
 }
 
-if [ "$1" = "--limits" -o "$1" = "-l" ]; then
+if [[ "$1" = "--limits" || "$1" = "-l" ]]; then
     limits
     exit 0
 fi
 
-if [ "$1" = "--help" -o "$1" = "-h" ]; then
-    usage 
+if [[ "$1" = "--help" || "$1" = "-h" ]]; then
+    usage
     exit 0
 fi
 
 if [ -n "$1" ]; then
-    printf "\nUnknown parameter '$1'\n" >&2
+    printf "\nUnknown parameter '%s'\n" "$1" >&2
     usage
     exit 1
 fi
@@ -71,13 +72,15 @@ generateData(){
     local -i TOT
     local -i TOTINSTANCES
     # read process list into cache
-    local PSLIST="$(ps ax -o pid,user=WIDE-COLUMN,command --columns $(( COLS - WLEN )))"
-    local INOTIFY="$(find /proc/[0-9]*/fdinfo -type f 2>/dev/null | xargs grep ^inotify 2>/dev/null)"
-    local INOTIFYCNT="$(echo "$INOTIFY" | cut -d "/" -s --output-delimiter=" "  -f 3 |uniq -c | sed -e 's/:.*//')"
+    local PSLIST INOTIFY INOTIFYCNT INOTIFYINSTANCES INOTIFYUSERINSTANCES
+    PSLIST="$(ps ax -o pid,user=WIDE-COLUMN,command --columns $(( COLS - WLEN )))"
+    # shellcheck disable=SC2038
+    INOTIFY="$(find /proc/[0-9]*/fdinfo -type f 2>/dev/null | xargs grep ^inotify 2>/dev/null)"
+    INOTIFYCNT="$(echo "$INOTIFY" | cut -d "/" -s --output-delimiter=" "  -f 3 |uniq -c | sed -e 's/:.*//')"
     # unique instances per process is denoted by number of inotify FDs
-    local INOTIFYINSTANCES="$(echo "$INOTIFY" | cut -d "/" -s --output-delimiter=" "   -f 3,5 | sed -e 's/:.*//'| uniq |awk '{print $1}' |uniq -c)"
-    local INOTIFYUSERINSTANCES="$(echo "$INOTIFY" | cut -d "/" -s --output-delimiter=" "   -f 3,5 | sed -e 's/:.*//' | uniq |
-    	     while read PID FD; do echo $PID $FD $(grep -e "^\ *${PID}\ " <<< "$PSLIST"|awk '{print $2}'); done | cut -d" "  -f 3 | sort | uniq -c |sort -nr)"
+    INOTIFYINSTANCES="$(echo "$INOTIFY" | cut -d "/" -s --output-delimiter=" "   -f 3,5 | sed -e 's/:.*//'| uniq |awk '{print $1}' |uniq -c)"
+    INOTIFYUSERINSTANCES="$(echo "$INOTIFY" | cut -d "/" -s --output-delimiter=" "   -f 3,5 | sed -e 's/:.*//' | uniq |
+    	     while read -r PID FD; do echo "$PID $FD $(grep -e "^\ *${PID}\ " <<< "$PSLIST"|awk '{print $2}')"; done | cut -d" "  -f 3 | sort | uniq -c |sort -nr)"
     set -e
 
     cat <<< "$INOTIFYCNT" |

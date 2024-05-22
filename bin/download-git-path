@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# shellcheck source-path=..
+
+download-git-path() {
+  local pkgroot; pkgroot=$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/..")
+
+  DOC="Download a subdirectory of a git repository
+Usage:
+  download-git-path <repo-url> <tree-ish> <pathspec>...
+  download-git-path <github-url>..."
+# docopt parser below, refresh this parser with `docopt.sh download-git-path`
+# shellcheck disable=2016,2086,2317,1090,1091,2034,2154
+docopt() { source "$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh" '2.0.0' || {
+ret=$?;printf -- "exit %d\n" "$ret";exit "$ret";};set -e
+trimmed_doc=${DOC:0:142};usage=${DOC:44:98};digest=0c552;options=();node_0(){
+value _repo_url_ a;};node_1(){ value _tree_ish_ a;};node_2(){ value _pathspec_ \
+a true;};node_3(){ value _github_url_ a true;};node_4(){ sequence 0 1 5;}
+node_5(){ repeatable 2;};node_6(){ repeatable 3;};node_7(){ choice 4 6;};cat \
+<<<' docopt_exit() { [[ -n $1 ]] && printf "%s\n" "$1" >&2;printf "%s\n" \
+"${DOC:44:98}" >&2;exit 1;}';local varnames=(_repo_url_ _tree_ish_ _pathspec_ \
+_github_url_) varname;for varname in "${varnames[@]}"; do unset "var_$varname"
+done;parse 7 "$@";local p=${DOCOPT_PREFIX:-''};for varname in \
+"${varnames[@]}"; do unset "$p$varname";done;if declare -p var__pathspec_ \
+>/dev/null 2>&1; then eval $p'_pathspec_=("${var__pathspec_[@]}")';else eval \
+$p'_pathspec_=()';fi;if declare -p var__github_url_ >/dev/null 2>&1; then eval \
+$p'_github_url_=("${var__github_url_[@]}")';else eval $p'_github_url_=()';fi
+eval $p'_repo_url_=${var__repo_url_:-};'$p'_tree_ish_=${var__tree_ish_:-};'
+local docopt_i=1;[[ $BASH_VERSION =~ ^4.3 ]] && docopt_i=2;for \
+((;docopt_i>0;docopt_i--)); do for varname in "${varnames[@]}"; do declare -p \
+"$p$varname";done;done;}
+# docopt parser above, complete command for generating this parser is `docopt.sh --library='"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh"' download-git-path`
+  eval "$(docopt "$@")"
+  if [[ -n $_github_url_ ]]; then
+    if [[ ! $_github_url_ =~ https://github.com/.*/.*/tree/.* ]]; then
+      printf "Not a github url\n" >&2
+      return 1
+    fi
+    local gh_path=${_github_url_/#https:\/\/github.com\//}
+    local gh_user=${gh_path/%\/*/}
+    gh_path=${gh_path/#$gh_user\//}
+    local gh_repo=${gh_path/%\/*/}
+    gh_path=${gh_path/#$gh_repo\/tree\//}
+    local gh_ref=${gh_path/%\/*/}
+    gh_path=${gh_path/#$gh_ref\//}
+    _repo_url_="git@github.com:$gh_user/$gh_repo"
+    _tree_ish_=$gh_ref
+    _pathspec_=$gh_path
+  fi
+  local tmpgit
+  tmpgit=$(mktemp -d)
+  # shellcheck disable=2064
+  trap "rm -rf \"$tmpgit\"" EXIT
+  git init "$tmpgit"
+  (
+    cd "$tmpgit" && \
+    git config core.sparseCheckout true 2>/dev/null && \
+    printf "%s\n" "${_pathspec_[@]}" >> .git/info/sparse-checkout && \
+    git remote add -f origin "$_repo_url_" 2>/dev/null && \
+    git checkout "$_tree_ish_" 2>/dev/null
+  )
+  local repodir
+  repodir=$(basename "$_repo_url_")
+  local dir
+  for dir in "${_pathspec_[@]}"; do
+    if [[ ! -d "$tmpgit/$dir" ]]; then
+      printf "%s is not a directory" "$tmpgit/$dir" >&2
+      continue
+    fi
+    mkdir -p "$repodir/$(dirname "$dir")"
+    mv "$tmpgit/$dir" "$repodir/$(dirname "$dir")"
+  done
+}
+
+download-git-path "$@"

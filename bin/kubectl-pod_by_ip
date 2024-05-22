@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+pod_by_ip() {
+  kubectl get --all-namespaces -o json pods | jq -r --arg ip "$1" '.items[] | select(.status.podIP==$ip) | (.metadata.namespace + "." + .metadata.name)'
+}
+
+pod_by_ip "$@"

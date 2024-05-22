@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# shellcheck source-path=..
+
+ls-deleted() {
+  local pkgroot; pkgroot=$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/..")
+
+  DOC="Show deleted files that are still on disk because of open file handles
+Usage:
+  ls-deleted"
+# docopt parser below, refresh this parser with `docopt.sh ls-deleted`
+# shellcheck disable=2016,2086,2317,1090,1091,2034
+docopt() { source "$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh" '2.0.0' || {
+ret=$?;printf -- "exit %d\n" "$ret";exit "$ret";};set -e;trimmed_doc=${DOC:0:90}
+usage=${DOC:71:19};digest=c5f8b;options=();node_0(){ return 0;};cat <<<' \
+docopt_exit() { [[ -n $1 ]] && printf "%s\n" "$1" >&2;printf "%s\n" \
+"${DOC:71:19}" >&2;exit 1;}';local varnames=() varname;for varname in \
+"${varnames[@]}"; do unset "var_$varname";done;parse 0 "$@";return 0;local \
+p=${DOCOPT_PREFIX:-''};for varname in "${varnames[@]}"; do unset "$p$varname"
+done;eval ;local docopt_i=1;[[ $BASH_VERSION =~ ^4.3 ]] && docopt_i=2;for \
+((;docopt_i>0;docopt_i--)); do for varname in "${varnames[@]}"; do declare -p \
+"$p$varname";done;done;}
+# docopt parser above, complete command for generating this parser is `docopt.sh --library='"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh"' ls-deleted`
+  eval "$(docopt "$@")"
+  lsof -nP +L1
+}
+
+ls-deleted "$@"

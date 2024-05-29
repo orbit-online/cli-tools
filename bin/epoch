@@ -11,17 +11,17 @@ Usage:
 Will display current timestamp if no timestamp is given"
 # docopt parser below, refresh this parser with `docopt.sh epoch`
 # shellcheck disable=2016,2086,2317,1090,1091,2034
-docopt() { source "$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh" '2.0.0' || {
-ret=$?;printf -- "exit %d\n" "$ret";exit "$ret";};set -e
-trimmed_doc=${DOC:0:125};usage=${DOC:37:31};digest=2ac23;options=();node_0(){
-value UNIX_TIMESTAMP a;};node_1(){ optional 0;};cat <<<' docopt_exit() { [[ -n \
-$1 ]] && printf "%s\n" "$1" >&2;printf "%s\n" "${DOC:37:31}" >&2;exit 1;}'
-local varnames=(UNIX_TIMESTAMP) varname;for varname in "${varnames[@]}"; do
-unset "var_$varname";done;parse 1 "$@";local p=${DOCOPT_PREFIX:-''};for \
-varname in "${varnames[@]}"; do unset "$p$varname";done;eval $p'UNIX_TIMESTAMP'\
-'=${var_UNIX_TIMESTAMP:-};';local docopt_i=1;[[ $BASH_VERSION =~ ^4.3 ]] && \
-docopt_i=2;for ((;docopt_i>0;docopt_i--)); do for varname in "${varnames[@]}"; \
-do declare -p "$p$varname";done;done;}
+docopt() { local v='2.0.1'; source \
+"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh" "$v" || { ret=$?;printf -- "exit \
+%d\n" "$ret";exit "$ret";};set -e;trimmed_doc=${DOC:0:125};usage=${DOC:37:31}
+digest=2ac23;options=();node_0(){ value UNIX_TIMESTAMP a;};node_1(){ optional 0
+};cat <<<' docopt_exit() { [[ -n $1 ]] && printf "%s\n" "$1" >&2;printf "%s\n" \
+"${DOC:37:31}" >&2;exit 1;}';local varnames=(UNIX_TIMESTAMP) varname;for \
+varname in "${varnames[@]}"; do unset "var_$varname";done;parse 1 "$@";local \
+p=${DOCOPT_PREFIX:-''};for varname in "${varnames[@]}"; do unset "$p$varname"
+done;eval $p'UNIX_TIMESTAMP=${var_UNIX_TIMESTAMP:-};';local docopt_i=1;[[ \
+$BASH_VERSION =~ ^4.3 ]] && docopt_i=2;for ((;docopt_i>0;docopt_i--)); do for \
+varname in "${varnames[@]}"; do declare -p "$p$varname";done;done;}
 # docopt parser above, complete command for generating this parser is `docopt.sh --library='"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh"' epoch`
   eval "$(docopt "$@")"
   if [[ -z $UNIX_TIMESTAMP ]]; then

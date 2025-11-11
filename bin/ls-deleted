@@ -8,18 +8,19 @@ ls-deleted() {
 Usage:
   ls-deleted"
 # docopt parser below, refresh this parser with `docopt.sh ls-deleted`
-# shellcheck disable=2016,2086,2317,1090,1091,2034
-docopt() { local v='2.0.1'; source \
-"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh" "$v" || { ret=$?;printf -- "exit \
-%d\n" "$ret";exit "$ret";};set -e;trimmed_doc=${DOC:0:90};usage=${DOC:71:19}
-digest=c5f8b;options=();node_0(){ return 0;};cat <<<' docopt_exit() { [[ -n $1 \
-]] && printf "%s\n" "$1" >&2;printf "%s\n" "${DOC:71:19}" >&2;exit 1;}';local \
-varnames=() varname;for varname in "${varnames[@]}"; do unset "var_$varname"
-done;parse 0 "$@";return 0;local p=${DOCOPT_PREFIX:-''};for varname in \
-"${varnames[@]}"; do unset "$p$varname";done;eval ;local docopt_i=1;[[ \
-$BASH_VERSION =~ ^4.3 ]] && docopt_i=2;for ((;docopt_i>0;docopt_i--)); do for \
-varname in "${varnames[@]}"; do declare -p "$p$varname";done;done;}
-# docopt parser above, complete command for generating this parser is `docopt.sh --library='"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh"' ls-deleted`
+# shellcheck disable=2016,2086,2329,1090,1091,2034,2317
+docopt() { local v='2.0.3'; source \
+"$pkgroot/.upkg/docopt-lib.sh-v$v/docopt-lib.sh" "$v" || { ret=$?;printf -- \
+"exit %d\n" "$ret";exit "$ret";};set -e;trimmed_doc=${DOC:0:90}
+usage=${DOC:71:19};digest=c5f8b;options=();node_0(){ return 0;};cat <<<' \
+docopt_exit() { [[ -n $1 ]] && printf "%s\n" "$1" >&2;printf "%s\n" \
+"${DOC:71:19}" >&2;exit 1;}';local varnames=() varname;for varname in \
+"${varnames[@]}"; do unset "var_$varname";done;parse 0 "$@";return 0;local \
+p=${DOCOPT_PREFIX:-''};for varname in "${varnames[@]}"; do unset "$p$varname"
+done;eval ;local docopt_i=1;[[ $BASH_VERSION =~ ^4.3 ]] && docopt_i=2;for \
+((;docopt_i>0;docopt_i--)); do for varname in "${varnames[@]}"; do declare -p \
+"$p$varname";done;done;}
+# docopt parser above, complete command for generating this parser is `docopt.sh --library='"$pkgroot/.upkg/docopt-lib.sh-v$v/docopt-lib.sh"' ls-deleted`
   eval "$(docopt "$@")"
   lsof -nP +L1
 }

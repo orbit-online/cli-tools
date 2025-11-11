@@ -14,22 +14,22 @@ Options:
   -W --no-watch   Don't watch the status, print it once and exit
 "
 # docopt parser below, refresh this parser with `docopt.sh gha-status`
-# shellcheck disable=2016,2086,2317,1090,1091,2034
-docopt() { local v='2.0.1'; source \
-"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh" "$v" || { ret=$?;printf -- "exit \
-%d\n" "$ret";exit "$ret";};set -e;trimmed_doc=${DOC:0:168};usage=${DOC:47:46}
-digest=b43a5;options=('-W --no-watch 0');node_0(){ switch __no_watch 0;}
-node_1(){ value GIT_REF a;};node_2(){ value REPO a;};node_3(){ optional 0;}
-node_4(){ optional 1;};node_5(){ optional 2;};node_6(){ sequence 3 4 5;};cat \
-<<<' docopt_exit() { [[ -n $1 ]] && printf "%s\n" "$1" >&2;printf "%s\n" \
-"${DOC:47:46}" >&2;exit 1;}';local varnames=(__no_watch GIT_REF REPO) varname
-for varname in "${varnames[@]}"; do unset "var_$varname";done;parse 6 "$@"
-local p=${DOCOPT_PREFIX:-''};for varname in "${varnames[@]}"; do unset \
+# shellcheck disable=2016,2086,2329,1090,1091,2034
+docopt() { local v='2.0.3'; source \
+"$pkgroot/.upkg/docopt-lib.sh-v$v/docopt-lib.sh" "$v" || { ret=$?;printf -- \
+"exit %d\n" "$ret";exit "$ret";};set -e;trimmed_doc=${DOC:0:168}
+usage=${DOC:47:46};digest=b43a5;options=('-W --no-watch 0');node_0(){ switch \
+__no_watch 0;};node_1(){ value GIT_REF a;};node_2(){ value REPO a;};node_3(){
+optional 0;};node_4(){ optional 1;};node_5(){ optional 2;};node_6(){ sequence \
+3 4 5;};cat <<<' docopt_exit() { [[ -n $1 ]] && printf "%s\n" "$1" >&2;printf \
+"%s\n" "${DOC:47:46}" >&2;exit 1;}';local varnames=(__no_watch GIT_REF REPO) \
+varname;for varname in "${varnames[@]}"; do unset "var_$varname";done;parse 6 \
+"$@";local p=${DOCOPT_PREFIX:-''};for varname in "${varnames[@]}"; do unset \
 "$p$varname";done;eval $p'__no_watch=${var___no_watch:-false};'$p'GIT_REF=${va'\
 'r_GIT_REF:-};'$p'REPO=${var_REPO:-};';local docopt_i=1;[[ $BASH_VERSION =~ \
 ^4.3 ]] && docopt_i=2;for ((;docopt_i>0;docopt_i--)); do for varname in \
 "${varnames[@]}"; do declare -p "$p$varname";done;done;}
-# docopt parser above, complete command for generating this parser is `docopt.sh --library='"$pkgroot/.upkg/docopt-lib.sh/docopt-lib.sh"' gha-status`
+# docopt parser above, complete command for generating this parser is `docopt.sh --library='"$pkgroot/.upkg/docopt-lib.sh-v$v/docopt-lib.sh"' gha-status`
   eval "$(docopt "$@")"
 
   local org repo git_ref
